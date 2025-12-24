@@ -156,7 +156,67 @@ Issues found in v1.0 builds (SHERPA, AutoGraph):
 
 ---
 
-## [Unreleased] - v2.1+ Roadmap
+## [2.1.0-beta] - 2024-12-25
+
+### 🎯 Major Release - Generic E2E & Regression Testing
+
+**Tested on:** AutoGraph v3.0 → v3.1 (revealed critical gaps!)
+
+### Added
+
+#### Generic Testing Framework
+- **Generic E2E Requirements** (`generic_e2e_requirements.md`)
+  - Project-type detection (web/API/CLI/desktop)
+  - Adaptive testing strategies
+  - Complete user workflow testing
+  - Data persistence verification
+  - Works for ANY project type!
+
+- **Generic Regression Requirements** (`generic_regression_requirements.md`)
+  - Baseline creation (enhancement mode)
+  - Sampling strategy (10% of features)
+  - Quick regression checks
+  - Framework-agnostic
+
+#### Enhanced Quality Gates
+- Updated E2E gate to be truly generic
+- Emphasizes "test complete workflows, not isolated APIs"
+- Requires data persistence verification
+- Adapts to project type automatically
+
+#### Bug Fixes
+- Fixed stop condition in `enhancement_coding_prompt.md`
+- Fixed stop condition in `bugfix_mode_prompt.md`
+- Fixed `progress.py` to check `spec/feature_list.json`
+- Enhanced security allowlist (python3, docker, curl, jq, etc.)
+
+### Critical Learnings from AutoGraph Test
+
+**What We Discovered:**
+- ❌ Agent created tests but never RAN them
+- ❌ Agent marked features passing without real verification
+- ❌ Tests passed in isolation but failed in browser
+- ❌ Infrastructure assumptions (MinIO buckets) not validated
+- ✅ Agent's CODE changes were good
+- ✅ But VERIFICATION was insufficient
+
+**What v2.1 Fixes:**
+- ✅ Generic testing (not AutoGraph-specific!)
+- ✅ Emphasizes "actually run the tests"
+- ✅ Requires complete workflow testing
+- ✅ Mandates persistence verification
+- ✅ Tests in actual interface (browser/CLI/etc.)
+
+### What's Still Needed for v2.2
+
+- Infrastructure validation gate
+- "Actually execute tests" enforcement
+- Smoke test after marking complete
+- Deployment verification
+
+---
+
+## [Unreleased] - v2.2+ Roadmap
 
 ### Planned Enhancements
 
