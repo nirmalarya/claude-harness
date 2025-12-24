@@ -70,6 +70,21 @@ Environment Variables:
         help=f"Claude model to use (default: {DEFAULT_MODEL})",
     )
 
+    parser.add_argument(
+        "--mode",
+        type=str,
+        choices=["greenfield", "enhancement", "bugfix"],
+        default="greenfield",
+        help="Development mode: greenfield (new project), enhancement (add features), bugfix (fix issues)",
+    )
+
+    parser.add_argument(
+        "--spec",
+        type=str,
+        default=None,
+        help="Path to specification file (e.g., specs/autograph_bugfix_spec.txt). Required for enhancement/bugfix modes.",
+    )
+
     return parser.parse_args()
 
 
@@ -84,6 +99,12 @@ def main() -> None:
         print("  claude setup-token")
         print("\nThen set it:")
         print("  export CLAUDE_CODE_OAUTH_TOKEN='your-oauth-token-here'")
+        return
+
+    # Validate spec file for enhancement/bugfix modes
+    if args.mode in ["enhancement", "bugfix"] and not args.spec:
+        print(f"Error: --spec is required for {args.mode} mode")
+        print(f"\nExample: --spec specs/autograph_bugfix_spec.txt")
         return
 
     # Automatically place projects in generations/ directory unless already specified
@@ -104,6 +125,8 @@ def main() -> None:
                 project_dir=project_dir,
                 model=args.model,
                 max_iterations=args.max_iterations,
+                mode=args.mode,
+                spec_file=args.spec,
             )
         )
     except KeyboardInterrupt:

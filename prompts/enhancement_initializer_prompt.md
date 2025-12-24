@@ -23,17 +23,17 @@ pwd
 ls -la
 
 # 2. Check if feature_list.json already exists
-if [ -f "feature_list.json" ]; then
-    echo "✅ Existing feature_list.json found"
-    total=$(cat feature_list.json | python3 -c "import json, sys; print(len(json.load(sys.stdin)))")
-    passing=$(cat feature_list.json | python3 -c "import json, sys; print(len([f for f in json.load(sys.stdin) if f.get('passes')]))")
+if [ -f "spec/feature_list.json" ]; then
+    echo "✅ Existing spec/feature_list.json found"
+    total=$(cat spec/feature_list.json | python3 -c "import json, sys; print(len(json.load(sys.stdin)))")
+    passing=$(cat spec/feature_list.json | python3 -c "import json, sys; print(len([f for f in json.load(sys.stdin) if f.get('passes')]))")
     echo "Current state: $passing/$total features passing"
 else
-    echo "⚠️ No feature_list.json - might be new enhancement"
+    echo "⚠️ No spec/feature_list.json - might be new enhancement"
 fi
 
 # 3. Read the enhancement spec
-cat enhancement_spec.txt || cat app_spec.txt
+cat spec/enhancement_spec.txt || cat spec/app_spec.txt
 
 # 4. Check git history (understand what was built)
 git log --oneline -20

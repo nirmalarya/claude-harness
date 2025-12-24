@@ -98,6 +98,8 @@ async def run_autonomous_agent(
     project_dir: Path,
     model: str,
     max_iterations: Optional[int] = None,
+    mode: str = "greenfield",
+    spec_file: Optional[str] = None,
 ) -> None:
     """
     Run the autonomous agent loop.
@@ -106,12 +108,17 @@ async def run_autonomous_agent(
         project_dir: Directory for the project
         model: Claude model to use
         max_iterations: Maximum number of iterations (None for unlimited)
+        mode: Development mode (greenfield, enhancement, bugfix)
+        spec_file: Path to specification file (required for enhancement/bugfix)
     """
     print("\n" + "=" * 70)
-    print("  AUTONOMOUS CODING AGENT DEMO")
+    print("  AUTONOMOUS CODING AGENT")
     print("=" * 70)
     print(f"\nProject directory: {project_dir}")
     print(f"Model: {model}")
+    print(f"Mode: {mode}")
+    if spec_file:
+        print(f"Spec file: {spec_file}")
     if max_iterations:
         print(f"Max iterations: {max_iterations}")
     else:
@@ -122,22 +129,37 @@ async def run_autonomous_agent(
     project_dir.mkdir(parents=True, exist_ok=True)
 
     # Check if this is a fresh start or continuation
-    tests_file = project_dir / "feature_list.json"
-    is_first_run = not tests_file.exists()
+    spec_dir = project_dir / "spec"
+    tests_file = spec_dir / "feature_list.json"
+    enhancement_spec_file = spec_dir / "enhancement_spec.txt"
+    
+    # Determine if this is the first run
+    if mode in ["enhancement", "bugfix"]:
+        # Enhancement mode: first run if no enhancement_spec.txt exists
+        is_first_run = not enhancement_spec_file.exists()
+    else:
+        # Greenfield mode: first run if no feature_list.json exists
+        is_first_run = not tests_file.exists()
 
     if is_first_run:
-        print("Fresh start - will use initializer agent")
+        print(f"🆕 Fresh start - will use initializer agent ({mode} mode)")
         print()
-        print("=" * 70)
-        print("  NOTE: First session takes 10-20+ minutes!")
-        print("  The agent is generating 200 detailed test cases.")
-        print("  This may appear to hang - it's working. Watch for [Tool: ...] output.")
-        print("=" * 70)
+        if mode == "greenfield":
+            print("=" * 70)
+            print("  NOTE: First session takes 10-20+ minutes!")
+            print("  The agent is generating 100+ detailed test cases.")
+            print("  This may appear to hang - it's working. Watch for [Tool: ...] output.")
+            print("=" * 70)
+        else:
+            print("=" * 70)
+            print(f"  {mode.upper()} MODE - Enhancing existing project")
+            print("  Reading existing feature_list.json and appending new features.")
+            print("=" * 70)
         print()
-        # Copy the app spec into the project directory for the agent to read
-        copy_spec_to_project(project_dir)
+        # Copy the spec into the project directory for the agent to read
+        copy_spec_to_project(project_dir, spec_file, mode)
     else:
-        print("Continuing existing project")
+        print(f"Continuing existing project ({mode} mode)")
         print_progress_summary(project_dir)
 
     # Main loop
@@ -158,12 +180,12 @@ async def run_autonomous_agent(
         # Create client (fresh context)
         client = create_client(project_dir, model)
 
-        # Choose prompt based on session type
+        # Choose prompt based on session type and mode
         if is_first_run:
-            prompt = get_initializer_prompt()
+            prompt = get_initializer_prompt(mode)
             is_first_run = False  # Only use initializer once
         else:
-            prompt = get_coding_prompt()
+            prompt = get_coding_prompt(mode)
 
         # Run session with async context manager
         async with client:

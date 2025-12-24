@@ -8,6 +8,11 @@
 
 ```
 project/
+├── spec/                      # ALL SPECIFICATIONS (source of truth!)
+│   ├── app_spec.txt          # Greenfield: Full app specification
+│   ├── enhancement_spec.txt  # Enhancement: New features to add
+│   ├── bugfix_spec.txt       # Bugfix: Issues to fix
+│   └── feature_list.json     # Generated: All features (tracked by agent)
 ├── src/ or package_name/      # Source code (backend/frontend)
 │   ├── api/
 │   ├── core/
@@ -20,14 +25,13 @@ project/
 │   └── fixtures/             # Test fixtures and helpers
 ├── .sessions/                 # Session artifacts (gitignored!)
 │   ├── SESSION_*.md          # Session summaries
-│   ├── feature_list.json     # Feature tracking
 │   ├── claude-progress.txt   # Progress notes
 │   └── baseline_features.txt # Regression baseline
 ├── scripts/                   # Utility scripts
 │   ├── setup/               # Setup and initialization
 │   ├── deploy/              # Deployment scripts
 │   └── utils/               # Utility scripts
-├── docs/                      # Documentation
+├── docs/                      # User-facing documentation
 │   ├── architecture/        # Architecture docs
 │   ├── api/                 # API documentation
 │   └── guides/              # User guides
@@ -35,6 +39,7 @@ project/
 │   ├── docker/
 │   ├── k8s/
 │   └── terraform/
+├── logs/                      # Log files (gitignored)
 └── (< 20 essential config files in root)
     ├── README.md
     ├── package.json or requirements.txt
@@ -272,4 +277,4 @@ Let me add this to the prompts now:
 
 <function_calls>
 <invoke name="search_replace">
-<parameter name="file_path">autonomous-harness/prompts/initializer_prompt.md
+<parameter name="file_path">/Users/nirmalarya/Workspace/autonomous-harness/prompts/initializer_prompt.md

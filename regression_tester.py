@@ -90,10 +90,15 @@ def run_regression_tests(feature_list_path: Path, sample_size: int = None):
 
 
 if __name__ == "__main__":
-    feature_list = Path("feature_list.json")
+    # Check spec/ folder first, then fallback to root
+    feature_list = Path("spec/feature_list.json")
     
     if not feature_list.exists():
-        print("feature_list.json not found in current directory")
+        feature_list = Path("feature_list.json")
+    
+    if not feature_list.exists():
+        print("feature_list.json not found in spec/ or current directory")
+        print("Expected location: spec/feature_list.json")
         sys.exit(1)
     
     success = run_regression_tests(feature_list)

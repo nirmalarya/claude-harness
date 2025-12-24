@@ -40,15 +40,24 @@ def get_coding_prompt(mode: str = "greenfield") -> str:
 
 def copy_spec_to_project(project_dir: Path, spec_file: str = None, mode: str = "greenfield") -> None:
     """Copy the spec file and helper tools into the project directory."""
-    # Copy spec file
+    # Create spec/ directory in project
+    spec_dir = project_dir / "spec"
+    spec_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Copy spec file to project/spec/
     if spec_file:
         spec_source = Path(spec_file)
-        spec_name = "enhancement_spec.txt" if mode in ["enhancement", "bugfix"] else "app_spec.txt"
+        # Determine target name based on mode
+        if mode in ["enhancement", "bugfix"]:
+            spec_name = "enhancement_spec.txt"
+        else:
+            spec_name = "app_spec.txt"
     else:
-        spec_source = PROMPTS_DIR / "app_spec.txt"
+        # Use default example spec
+        spec_source = Path(__file__).parent / "specs" / "simple_example_spec.txt"
         spec_name = "app_spec.txt"
     
-    spec_dest = project_dir / spec_name
+    spec_dest = spec_dir / spec_name
     
     if not spec_dest.exists() or mode in ["enhancement", "bugfix"]:
         shutil.copy(spec_source, spec_dest)

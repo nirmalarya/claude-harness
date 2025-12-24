@@ -2,6 +2,19 @@
 
 You are FIXING bugs in an existing project.
 
+**CRITICAL: Check completion FIRST - Stop condition!**
+
+```bash
+total=$(cat spec/feature_list.json | python3 -c "import json, sys; print(len(json.load(sys.stdin)))")
+passing=$(cat spec/feature_list.json | python3 -c "import json, sys; print(len([f for f in json.load(sys.stdin) if f.get('passes')]))")
+
+if [ "$passing" = "$total" ]; then
+    echo "🎉 ALL BUGFIXES COMPLETE ($total/$total)!"
+    echo "✅ STOPPING - Do not continue!"
+    exit 0
+fi
+```
+
 ---
 
 ## CRITICAL: BUGFIX MODE RULES

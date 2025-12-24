@@ -1,5 +1,5 @@
 <enhancement_spec>
-  <project_name>AutoGraph v3.1 - Foundation Fixes</project_name>
+  <project_name>AutoGraph</project_name>
   <base_version>v3.0 (654 features, has foundation issues)</base_version>
   <target_version>v3.1 (Foundation solid, all core features working)</target_version>
   <mode>bugfix</mode>

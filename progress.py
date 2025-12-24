@@ -19,8 +19,12 @@ def count_passing_tests(project_dir: Path) -> tuple[int, int]:
     Returns:
         (passing_count, total_count)
     """
-    tests_file = project_dir / "feature_list.json"
-
+    # Check spec/ folder first (new structure), then fallback to root (old structure)
+    tests_file = project_dir / "spec" / "feature_list.json"
+    
+    if not tests_file.exists():
+        tests_file = project_dir / "feature_list.json"
+    
     if not tests_file.exists():
         return 0, 0
 

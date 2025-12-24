@@ -227,7 +227,47 @@ Use browser automation tools:
 - Skip visual verification
 - Mark tests passing without thorough verification
 
-### STEP 12: ZERO TODOs CHECK (MANDATORY)
+### STEP 12: EXECUTE THE TEST YOU CREATED (MANDATORY!)
+
+**CRITICAL: Tests must be RUN and PASS, not just exist!**
+
+```bash
+# Find test file you created this session
+test_file=$(git diff --name-only HEAD | grep -E "test_.*\.(py|spec\.ts|test\.js|sh)$" | head -1)
+
+if [ -n "$test_file" ]; then
+    echo "Found test: $test_file"
+    echo "EXECUTING TEST NOW..."
+    
+    # Run based on file type
+    if [[ "$test_file" == *.py ]]; then
+        python3 "$test_file"
+        test_result=$?
+    elif [[ "$test_file" == *.spec.ts ]] || [[ "$test_file" == *.test.js ]]; then
+        npm test "$test_file"
+        test_result=$?
+    elif [[ "$test_file" == *.sh ]]; then
+        bash "$test_file"
+        test_result=$?
+    fi
+    
+    if [ $test_result -ne 0 ]; then
+        echo "❌ TEST FAILED!"
+        echo "Fix implementation until test passes!"
+        echo "DO NOT mark feature as passing!"
+        exit 1
+    fi
+    
+    echo "✅ Test executed and PASSED"
+else
+    echo "⚠️  No test file created this session"
+    echo "For testable features, create and run test!"
+fi
+```
+
+**NEVER mark feature passing if test failed or wasn't run!**
+
+### STEP 13: ZERO TODOs CHECK (MANDATORY)
 
 **Before marking feature as passing:**
 

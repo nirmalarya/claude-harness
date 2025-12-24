@@ -48,9 +48,25 @@ cat claude-progress.txt | tail -50
 
 ---
 
-### STEP 2: CHECK PROJECT COMPLETION
+### STEP 2: CHECK PROJECT COMPLETION (STOP CONDITION!)
 
-**Same as greenfield - stop at 100%!**
+**CRITICAL: Check completion status FIRST!**
+
+```bash
+total=$(cat spec/feature_list.json | python3 -c "import json, sys; print(len(json.load(sys.stdin)))")
+passing=$(cat spec/feature_list.json | python3 -c "import json, sys; print(len([f for f in json.load(sys.stdin) if f.get('passes')]))")
+
+echo "Progress: $passing/$total features"
+
+if [ "$passing" = "$total" ]; then
+    echo "🎉 ALL ENHANCEMENT FEATURES COMPLETE ($total/$total)!"
+    echo "✅ STOPPING - All work done, do not continue!"
+    echo "Update claude-progress.txt with final status and exit."
+    exit 0
+fi
+```
+
+**If all features pass: STOP WORKING!** Do not add more features, refactor, or polish. The enhancement is complete!
 
 ---
 

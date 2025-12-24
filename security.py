@@ -20,15 +20,47 @@ ALLOWED_COMMANDS = {
     "tail",
     "wc",
     "grep",
+    "find",   # Find files
     # File operations (agent uses SDK tools for most file ops, but cp/mkdir needed occasionally)
     "cp",
+    "mv",
+    "rm",
     "mkdir",
     "chmod",  # For making scripts executable; validated separately
     # Directory
     "pwd",
+    "cd",
+    # Shell builtins (needed for conditionals)
+    "test",   # test command (if test -f file)
+    "[",      # Alternative syntax for test (if [ -f file ])
+    "echo",   # Output
+    # Text processing
+    "sed",
+    "awk",
+    "cut",
+    "sort",
+    "uniq",
+    "tr",
+    "jq",     # JSON parsing
     # Node.js development
     "npm",
     "node",
+    "npx",
+    # Python development
+    "python",
+    "python3",
+    "pip",
+    "pip3",
+    # Docker
+    "docker",
+    "docker-compose",
+    # Database
+    "psql",      # PostgreSQL client
+    "pg_dump",   # PostgreSQL backup
+    # Network/HTTP
+    "curl",      # HTTP requests
+    "wget",      # Downloads
+    "nc",        # Netcat for port checking
     # Version control
     "git",
     # Process management
@@ -36,8 +68,16 @@ ALLOWED_COMMANDS = {
     "lsof",
     "sleep",
     "pkill",  # For killing dev servers; validated separately
+    "kill",
     # Script execution
     "init.sh",  # Init scripts; validated separately
+    "bash",      # Run bash scripts
+    "sh",        # Run shell scripts
+    # System info
+    "uname",
+    "whoami",
+    "date",
+    "env",
 }
 
 # Commands that need additional validation even when in the allowlist
