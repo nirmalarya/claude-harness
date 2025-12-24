@@ -1,21 +1,25 @@
 # SDLC-Aware Autonomous Harness - Vision & Requirements
 
-**Vision:** Professional autonomous coding harness supporting full Software Development Lifecycle
+**Vision:** Quality-focused autonomous coding executor with professional testing and validation
 
-**Not just code generation - Complete SDLC automation!**
+**Scope:** Feature implementation with quality gates (NOT full SDLC - that's SHERPA!)  
+**Purpose:** Embeddable execution engine for SHERPA or standalone use
 
 ---
 
 ## 🎯 Core Principle
 
-**Generic, SDLC-Aware, Production-Grade**
+**Quality-Focused Executor (Embeddable in SHERPA)**
 
 The harness must:
-- ✅ Build ANY software (web, mobile, CLI, API, desktop, embedded)
-- ✅ Support FULL lifecycle (requirements → maintenance)
-- ✅ Enforce professional practices (testing, security, documentation)
-- ✅ Work for ANY team (startup → enterprise)
-- ✅ Integrate with existing tools (Git, CI/CD, trackers)
+- ✅ Execute ANY spec (web, mobile, CLI, API, desktop)
+- ✅ Enforce quality gates (testing, security, validation)
+- ✅ Support enhancement mode (brownfield)
+- ✅ Work standalone OR embedded in SHERPA
+- ✅ Technology-agnostic (any stack)
+
+**SHERPA does:** Requirements, Architecture, Knowledge, Orchestration  
+**Harness does:** Implementation, Testing, Validation, Quality
 
 ---
 
