@@ -1,26 +1,38 @@
-# Claude Skills Integration - v2.0 Feature
+# Agent Skills Integration - v2.0 Feature
 
 **Priority:** 🔥 HIGH (Killer Feature!)  
 **Effort:** 2-3 hours  
-**Impact:** MASSIVE (unique differentiator)
+**Impact:** MASSIVE (ecosystem play!)
+
+**Standard:** Open format from [agentskills.io](https://agentskills.io/home)  
+**Compatibility:** Claude, Cursor, GitHub Copilot, VS Code, OpenAI Codex, and more!
 
 ---
 
 ## Vision
 
-Integrate Claude's native skills system into autonomous-harness, making it the **first and only** autonomous coding harness with full skills support.
+Integrate the **Agent Skills open standard** into autonomous-harness, making it compatible with the entire skills ecosystem.
 
-**No one else is doing this** - including Anthropic's own demo!
+**Skills written once work everywhere** - Claude, Cursor, Copilot, VS Code!
 
 ---
 
-## What Are Claude Skills?
+## What Are Agent Skills?
 
-**Claude Skills:**
-- Reusable knowledge patterns
+**Agent Skills (Open Standard):**
+- Reusable knowledge patterns in `SKILL.md` format
 - Organization-wide best practices
-- Optimized format for Claude
-- Native ecosystem integration
+- Works across multiple AI tools (Claude, Cursor, Copilot, etc.)
+- Portable, version-controlled packages
+- Open specification at [agentskills.io](https://agentskills.io/home)
+
+**Supported by:**
+- Claude Code (our primary)
+- Cursor (our secondary harness!)
+- GitHub Copilot
+- VS Code
+- OpenAI Codex
+- And growing!
 
 **Example Skill Structure:**
 ```markdown
