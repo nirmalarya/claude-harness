@@ -14,6 +14,7 @@ from claude_code_sdk import ClaudeSDKClient
 from client import create_client
 from progress import print_session_header, print_progress_summary
 from prompts import get_initializer_prompt, get_coding_prompt, copy_spec_to_project
+from output_formatter import format_tool_output
 
 
 # Configuration
