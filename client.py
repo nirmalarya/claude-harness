@@ -79,8 +79,8 @@ def create_client(project_dir: Path, model: str) -> ClaudeSDKClient:
                 # Bash permission granted here, but actual commands are validated
                 # by the bash_security_hook (see security.py for allowed commands)
                 "Bash(*)",
-                # Allow Puppeteer MCP tools for browser automation
-                *PUPPETEER_TOOLS,
+                # Allow ALL Puppeteer MCP tools for browser automation (no prompts!)
+                "mcp__puppeteer__*",  # Wildcard for all Puppeteer tools
             ],
         },
     }
