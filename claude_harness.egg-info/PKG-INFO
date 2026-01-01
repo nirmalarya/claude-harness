@@ -1,3 +1,32 @@
+Metadata-Version: 2.4
+Name: claude-harness
+Version: 3.1.0
+Summary: Production-ready autonomous coding harness using Claude Code SDK
+Home-page: https://github.com/nirmalarya/claude-harness
+Author: Nirmalarya
+Author-email: Nirmalarya <hello@nirmalarya.com>
+License: MIT
+Project-URL: Homepage, https://github.com/nirmalarya/claude-harness
+Project-URL: Documentation, https://github.com/nirmalarya/claude-harness/blob/main/README.md
+Project-URL: Repository, https://github.com/nirmalarya/claude-harness
+Project-URL: Issues, https://github.com/nirmalarya/claude-harness/issues
+Keywords: claude,autonomous,coding,agent,ai,sdk
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.13
+Classifier: Programming Language :: Python :: 3.14
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: claude-code-sdk>=0.0.25
+Dynamic: author
+Dynamic: home-page
+Dynamic: requires-python
+
 # claude-harness
 
 Production-ready autonomous coding harness using Claude Code SDK. Build complete applications autonomously with a two-agent pattern (initializer + coding agents).

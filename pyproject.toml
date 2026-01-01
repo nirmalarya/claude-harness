@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "claude-harness"
+version = "3.1.0"
+description = "Production-ready autonomous coding harness using Claude Code SDK"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "Nirmalarya", email = "hello@nirmalarya.com"}
+]
+keywords = ["claude", "autonomous", "coding", "agent", "ai", "sdk"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
+
+dependencies = [
+    "claude-code-sdk>=0.0.25",
+]
+
+[project.urls]
+Homepage = "https://github.com/nirmalarya/claude-harness"
+Documentation = "https://github.com/nirmalarya/claude-harness/blob/main/README.md"
+Repository = "https://github.com/nirmalarya/claude-harness"
+Issues = "https://github.com/nirmalarya/claude-harness/issues"
+
+[project.scripts]
+claude-harness = "autonomous_agent:main"
+
+[tool.setuptools]
+packages = ["infra", "validators"]
+py-modules = [
+    "agent",
+    "autonomous_agent",
+    "client",
+    "error_handler",
+    "loop_detector",
+    "output_formatter",
+    "progress",
+    "prompts",
+    "retry_manager",
+    "security",
+    "setup_mcp",
+]
+
+[tool.setuptools.package-data]
+"*" = ["prompts/*.md", "prompts/*.txt"]

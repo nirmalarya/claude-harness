@@ -85,6 +85,33 @@ Environment Variables:
         help="Path to specification file (e.g., specs/autograph_bugfix_spec.txt). Required for enhancement/bugfix modes.",
     )
 
+    parser.add_argument(
+        "--session-timeout",
+        type=int,
+        default=120,
+        help="Overall session timeout in minutes (default: 120)",
+    )
+
+    parser.add_argument(
+        "--stall-timeout",
+        type=int,
+        default=10,
+        help="No-activity stall timeout in minutes (default: 10)",
+    )
+
+    parser.add_argument(
+        "--max-retries",
+        type=int,
+        default=3,
+        help="Maximum retry attempts per feature (default: 3)",
+    )
+
+    parser.add_argument(
+        "--version",
+        action="store_true",
+        help="Show version and exit",
+    )
+
     return parser.parse_args()
 
 
@@ -92,7 +119,14 @@ def main() -> None:
     """Main entry point."""
     args = parse_args()
 
-    # Check for OAuth token
+    # Handle --version flag (no OAuth token required)
+    if args.version:
+        version_file = Path(__file__).parent / "VERSION"
+        version = version_file.read_text().strip()
+        print(f"claude-harness v{version}")
+        return
+
+    # Check for OAuth token (only when actually running)
     if not os.environ.get("CLAUDE_CODE_OAUTH_TOKEN"):
         print("Error: CLAUDE_CODE_OAUTH_TOKEN environment variable not set")
         print("\nGenerate your OAuth token using Claude Code CLI:")
@@ -127,6 +161,9 @@ def main() -> None:
                 max_iterations=args.max_iterations,
                 mode=args.mode,
                 spec_file=args.spec,
+                session_timeout_minutes=args.session_timeout,
+                stall_timeout_minutes=args.stall_timeout,
+                max_retries=args.max_retries,
             )
         )
     except KeyboardInterrupt:

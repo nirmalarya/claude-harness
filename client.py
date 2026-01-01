@@ -13,18 +13,10 @@ from claude_code_sdk import ClaudeCodeOptions, ClaudeSDKClient
 from claude_code_sdk.types import HookMatcher
 
 from security import bash_security_hook
+from setup_mcp import MCPServerSetup
+from validators.secrets_hook import secrets_scan_hook
+from validators.e2e_hook import e2e_validation_hook
 
-
-# Puppeteer MCP tools for browser automation
-PUPPETEER_TOOLS = [
-    "mcp__puppeteer__puppeteer_navigate",
-    "mcp__puppeteer__puppeteer_screenshot",
-    "mcp__puppeteer__puppeteer_click",
-    "mcp__puppeteer__puppeteer_fill",
-    "mcp__puppeteer__puppeteer_select",
-    "mcp__puppeteer__puppeteer_hover",
-    "mcp__puppeteer__puppeteer_evaluate",
-]
 
 # Built-in tools
 BUILTIN_TOOLS = [
@@ -37,13 +29,14 @@ BUILTIN_TOOLS = [
 ]
 
 
-def create_client(project_dir: Path, model: str) -> ClaudeSDKClient:
+def create_client(project_dir: Path, model: str, mode: str = "greenfield") -> ClaudeSDKClient:
     """
     Create a Claude Agent SDK client with multi-layered security.
 
     Args:
         project_dir: Directory for the project
         model: Claude model to use
+        mode: Execution mode (greenfield, enhancement, bugfix, backlog)
 
     Returns:
         Configured ClaudeSDKClient
@@ -53,6 +46,8 @@ def create_client(project_dir: Path, model: str) -> ClaudeSDKClient:
     2. Permissions - File operations restricted to project_dir only
     3. Security hooks - Bash commands validated against an allowlist
        (see security.py for ALLOWED_COMMANDS)
+    4. Secrets scanning - Git commits blocked if secrets detected
+    5. E2E validation - User-facing features require E2E tests
     """
     oauth_token = os.environ.get("CLAUDE_CODE_OAUTH_TOKEN")
     if not oauth_token:
@@ -61,6 +56,17 @@ def create_client(project_dir: Path, model: str) -> ClaudeSDKClient:
             "Generate your OAuth token using: claude setup-token\n"
             "Then set: export CLAUDE_CODE_OAUTH_TOKEN='your-oauth-token-here'"
         )
+
+    # Setup MCP servers dynamically based on mode
+    mcp_setup = MCPServerSetup()
+    mcp_servers = mcp_setup.setup(mode)
+
+    # Get dynamic tool lists
+    all_mcp_tools = []
+    all_mcp_tools.extend(mcp_setup.get_browser_tools())
+    all_mcp_tools.extend(mcp_setup.get_documentation_tools())
+    if mode == "backlog":
+        all_mcp_tools.extend(mcp_setup.get_azure_devops_tools())
 
     # Create comprehensive security settings
     # Note: Using relative paths ("./**") restricts access to project directory
@@ -79,8 +85,8 @@ def create_client(project_dir: Path, model: str) -> ClaudeSDKClient:
                 # Bash permission granted here, but actual commands are validated
                 # by the bash_security_hook (see security.py for allowed commands)
                 "Bash(*)",
-                # Allow ALL Puppeteer MCP tools for browser automation (no prompts!)
-                "mcp__puppeteer__*",  # Wildcard for all Puppeteer tools
+                # Allow ALL MCP tools (no prompts!)
+                "mcp__*",  # Wildcard for all MCP tools
             ],
         },
     }
@@ -97,7 +103,9 @@ def create_client(project_dir: Path, model: str) -> ClaudeSDKClient:
     print("   - Sandbox enabled (OS-level bash isolation)")
     print(f"   - Filesystem restricted to: {project_dir.resolve()}")
     print("   - Bash commands restricted to allowlist (see security.py)")
-    print("   - MCP servers: puppeteer (browser automation)")
+    print(f"   - MCP servers: {', '.join(mcp_servers.keys())}")
+    print("   - Secrets scanning enabled (blocks git commits with secrets)")
+    print("   - E2E validation enabled (requires tests for user-facing features)")
     print()
 
     return ClaudeSDKClient(
@@ -106,14 +114,20 @@ def create_client(project_dir: Path, model: str) -> ClaudeSDKClient:
             system_prompt="You are an expert full-stack developer building a production-quality web application.",
             allowed_tools=[
                 *BUILTIN_TOOLS,
-                *PUPPETEER_TOOLS,
+                *all_mcp_tools,
             ],
-            mcp_servers={
-                "puppeteer": {"command": "npx", "args": ["puppeteer-mcp-server"]}
-            },
+            mcp_servers=mcp_servers,
             hooks={
                 "PreToolUse": [
-                    HookMatcher(matcher="Bash", hooks=[bash_security_hook]),
+                    HookMatcher(matcher="Bash", hooks=[
+                        bash_security_hook,      # Command allowlist
+                        secrets_scan_hook,       # Secrets detection
+                    ]),
+                ],
+                "PostToolUse": [
+                    HookMatcher(matcher="Bash", hooks=[
+                        e2e_validation_hook,     # E2E test verification
+                    ]),
                 ],
             },
             max_turns=1000,

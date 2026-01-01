@@ -127,6 +127,21 @@ Set up the basic project structure based on what's specified in `app_spec.txt`.
 This typically includes directories for frontend, backend, and any other
 components mentioned in the spec.
 
+### AVAILABLE MCP TOOLS
+
+You have access to advanced tools via MCP (Model Context Protocol):
+
+**Documentation Lookup:**
+{{DOCUMENTATION_MCP_TOOLS}}
+
+Use these to query the latest framework documentation for best practices,
+linting setup, testing patterns, etc.
+
+**Browser Automation (for E2E testing):**
+{{BROWSER_MCP_TOOLS}}
+
+Use these for end-to-end testing of user-facing features.
+
 ### OPTIONAL: Start Implementation
 
 If you have time remaining in this session, you may begin implementing

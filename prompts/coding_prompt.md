@@ -513,15 +513,42 @@ Before context fills up:
 
 **ALL testing must use browser automation tools.**
 
-Available tools:
-- puppeteer_navigate - Start browser and go to URL
-- puppeteer_screenshot - Capture screenshot
-- puppeteer_click - Click elements
-- puppeteer_fill - Fill form inputs
-- puppeteer_evaluate - Execute JavaScript (use sparingly, only for debugging)
+### Available MCP Tools
+
+**Browser Automation (E2E Testing):**
+{{BROWSER_MCP_TOOLS}}
+
+**Documentation Lookup:**
+{{DOCUMENTATION_MCP_TOOLS}}
+
+Use documentation tools to query latest best practices for testing patterns.
+
+### E2E Testing Requirements for User-Facing Features
+
+For features with UI components (pages, forms, buttons, etc.), you MUST:
+
+1. **Use Puppeteer MCP tools** to test the feature end-to-end
+2. **Save screenshots** to `.claude/verification/` directory:
+   - Name them descriptively (e.g., `step-1-form-loaded.png`, `step-2-submitted.png`)
+   - Take screenshots at each key step
+3. **Create test_results.json** in `.claude/verification/` with this format:
+```json
+{
+  "feature_index": 42,
+  "overall_status": "passed",
+  "e2e_results": [
+    {"step": "Loaded login page", "status": "passed", "screenshot": "step-1-loaded.png"},
+    {"step": "Filled form", "status": "passed", "screenshot": "step-2-filled.png"},
+    {"step": "Submitted form", "status": "passed", "screenshot": "step-3-submitted.png"}
+  ],
+  "console_errors": [],
+  "visual_issues": []
+}
+```
+
+**IMPORTANT:** Git commits for user-facing features will be blocked if E2E tests are missing!
 
 Test like a human user with mouse and keyboard. Don't take shortcuts by using JavaScript evaluation.
-Don't use the puppeteer "active tab" tool.
 
 ---
 
