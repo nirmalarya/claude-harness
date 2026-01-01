@@ -27,6 +27,17 @@ def browser_cleanup_hook(tool_name: str, tool_input: dict, tool_result: dict) ->
     Returns:
         Hook result with cleanup status
     """
+    # Defensive type checking - handle case where tool_name might be a dict
+    if isinstance(tool_name, dict):
+        # Extract tool name from dict if present
+        actual_tool_name = tool_name.get('name', '') or tool_name.get('tool_name', '')
+        if not actual_tool_name:
+            return {"status": "skipped", "reason": "Could not extract tool name from dict"}
+        tool_name = actual_tool_name
+
+    # Convert to string if not already
+    tool_name = str(tool_name)
+
     # Only run for Puppeteer tools
     if "puppeteer" not in tool_name.lower():
         return {"status": "skipped", "reason": "Not a Puppeteer tool"}
