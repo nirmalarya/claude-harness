@@ -16,6 +16,7 @@ from security import bash_security_hook
 from setup_mcp import MCPServerSetup
 from validators.secrets_hook import secrets_scan_hook
 from validators.e2e_hook import e2e_validation_hook
+from validators.browser_cleanup_hook import browser_cleanup_hook
 
 
 # Built-in tools
@@ -127,6 +128,9 @@ def create_client(project_dir: Path, model: str, mode: str = "greenfield") -> Cl
                 "PostToolUse": [
                     HookMatcher(matcher="Bash", hooks=[
                         e2e_validation_hook,     # E2E test verification
+                    ]),
+                    HookMatcher(matcher="mcp__puppeteer__*", hooks=[
+                        browser_cleanup_hook,    # Auto-cleanup browsers
                     ]),
                 ],
             },
