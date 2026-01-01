@@ -68,16 +68,19 @@ class SkillsManager:
                 "code-quality",           # Production code standards
                 "project-patterns",       # Framework conventions (Next.js, FastAPI, etc.)
                 "harness-patterns",       # claude-harness workflow patterns
+                "lsp-navigation",         # Code intelligence with LSP
             ],
             "enhancement": [
                 "code-quality",           # Maintain existing standards
                 "project-patterns",       # Follow existing conventions
                 "harness-patterns",       # Workflow patterns
+                "lsp-navigation",         # Code navigation with LSP
             ],
             "backlog": [
                 "code-quality",           # Production standards
                 "project-patterns",       # Codebase conventions
                 "harness-patterns",       # Workflow patterns
+                "lsp-navigation",         # Code navigation with LSP
             ]
         }
 

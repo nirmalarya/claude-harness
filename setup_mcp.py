@@ -1,11 +1,14 @@
 """
-MCP Server Auto-Configuration for claude-harness v3.0
+MCP Server Auto-Configuration for claude-harness v3.2
 ==========================================================
 
 Dynamically configures MCP servers based on mode.
+Includes LSP integration via Cclsp for code intelligence.
 """
 
+import json
 import os
+from pathlib import Path
 
 
 class MCPServerSetup:

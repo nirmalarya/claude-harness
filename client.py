@@ -15,6 +15,7 @@ from claude_code_sdk.types import HookMatcher
 from security import bash_security_hook
 from setup_mcp import MCPServerSetup
 from skills_manager import SkillsManager
+from lsp_config import LSPConfigGenerator
 from validators.secrets_hook import secrets_scan_hook
 from validators.e2e_hook import e2e_validation_hook
 from validators.browser_cleanup_hook import browser_cleanup_hook
@@ -74,6 +75,12 @@ def create_client(project_dir: Path, model: str, mode: str = "greenfield") -> Cl
     skills_manager = SkillsManager(project_dir, mode)
     skills = skills_manager.load_skills_for_mode()
 
+    # Setup LSP (Language Server Protocol) for code intelligence
+    # Enable Claude Code's native LSP support (v2.0.74+)
+    os.environ["ENABLE_LSP_TOOL"] = "1"
+    lsp_generator = LSPConfigGenerator(project_dir)
+    lsp_setup = lsp_generator.setup_lsp()
+
     # Create comprehensive security settings
     # Note: Using relative paths ("./**") restricts access to project directory
     # since cwd is set to project_dir
@@ -113,6 +120,13 @@ def create_client(project_dir: Path, model: str, mode: str = "greenfield") -> Cl
     print("   - Secrets scanning enabled (blocks git commits with secrets)")
     print("   - E2E validation enabled (requires tests for user-facing features)")
     print(f"   - Skills loaded: {', '.join([s['name'] for s in skills]) if skills else 'none'}")
+    print(f"   - LSP enabled: {', '.join(lsp_setup['languages']) if lsp_setup['languages'] else 'none detected'}")
+    print(f"   - LSP config: {lsp_setup['config_file']}")
+
+    # Print LSP installation status
+    if lsp_setup['installation_instructions'] != "✓ All LSP servers installed!":
+        print("\n⚠️  LSP Server Installation Required:")
+        print(lsp_setup['installation_instructions'])
     print()
 
     return ClaudeSDKClient(
