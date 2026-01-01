@@ -26,9 +26,9 @@ claude-harness was using a generic `puppeteer-mcp-server` package that lacked au
 - ✅ Page cleanup intervals
 - ✅ MCP 2025-06-18 spec compliance
 
-### Fix
+### Fix (Two-Part Solution)
 
-**Changed Puppeteer MCP Server** (setup_mcp.py:67-79):
+**Part 1: Changed Puppeteer MCP Server** (setup_mcp.py:67-79):
 
 ```diff
   def _setup_browser_mcp(self) -> dict:
@@ -46,6 +46,27 @@ claude-harness was using a generic `puppeteer-mcp-server` package that lacked au
 +             "args": ["-y", "@modelcontextprotocol/server-puppeteer"]
           }
       }
+```
+
+**Part 2: Added Explicit Cleanup Instructions** (prompts/coding_prompt.md, prompts/initializer_prompt.md):
+
+The official MCP server has cleanup capabilities but they must be **triggered explicitly**. Added clear instructions to prompts:
+
+```markdown
+### Browser Cleanup (CRITICAL!)
+
+**After completing E2E tests, you MUST clean up browser resources:**
+
+The Puppeteer MCP server keeps browsers open by default. You must explicitly close them.
+
+**How to clean up:**
+[Tool: mcp__puppeteer__puppeteer_evaluate]
+   Input: {'expression': 'await browser.close()'}
+
+**When to clean up:**
+- After each feature's E2E tests complete
+- Before committing changes
+- Before ending the session
 ```
 
 ### Impact
@@ -107,6 +128,15 @@ Anthropic likely uses the official MCP server package which includes automatic c
 **setup_mcp.py** (lines 67-79)
 - Changed to official Puppeteer MCP server package
 - Added documentation about automatic cleanup
+
+**prompts/coding_prompt.md** (lines 553-579)
+- Added "Browser Cleanup (CRITICAL!)" section
+- Explicit instructions to close browsers after E2E tests
+- Warning about memory leak consequences
+
+**prompts/initializer_prompt.md** (lines 145-150)
+- Added browser cleanup note after MCP tools section
+- Same cleanup pattern for consistency
 
 ---
 

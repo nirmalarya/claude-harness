@@ -142,6 +142,13 @@ linting setup, testing patterns, etc.
 
 Use these for end-to-end testing of user-facing features.
 
+**CRITICAL: Browser Cleanup**
+After E2E testing, always close browsers to prevent memory leaks:
+```python
+[Tool: mcp__puppeteer__puppeteer_evaluate]
+   Input: {'expression': 'await browser.close()'}
+```
+
 ### OPTIONAL: Start Implementation
 
 If you have time remaining in this session, you may begin implementing

@@ -550,6 +550,34 @@ For features with UI components (pages, forms, buttons, etc.), you MUST:
 
 Test like a human user with mouse and keyboard. Don't take shortcuts by using JavaScript evaluation.
 
+### Browser Cleanup (CRITICAL!)
+
+**After completing E2E tests, you MUST clean up browser resources:**
+
+The Puppeteer MCP server keeps browsers open by default. You must explicitly close them to prevent memory leaks.
+
+**How to clean up:**
+```python
+# Option 1: Use puppeteer_evaluate to close the browser
+[Tool: mcp__puppeteer__puppeteer_evaluate]
+   Input: {'expression': 'await browser.close()'}
+```
+
+**When to clean up:**
+- ✅ After each feature's E2E tests complete
+- ✅ Before committing changes
+- ✅ Before ending the session
+
+**Why this matters:**
+- Without cleanup: 100 features = 100 open browsers = 20GB+ RAM consumed
+- With cleanup: Memory stays constant, no resource exhaustion
+
+**NEVER skip browser cleanup!** Check Chrome process count to verify:
+```bash
+ps aux | grep -i chrome | grep -v grep | wc -l
+# Should be 0-2, not 50+
+```
+
 ---
 
 ## IMPORTANT REMINDERS
