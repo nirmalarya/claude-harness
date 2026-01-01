@@ -14,6 +14,7 @@ from claude_code_sdk.types import HookMatcher
 
 from security import bash_security_hook
 from setup_mcp import MCPServerSetup
+from skills_manager import SkillsManager
 from validators.secrets_hook import secrets_scan_hook
 from validators.e2e_hook import e2e_validation_hook
 from validators.browser_cleanup_hook import browser_cleanup_hook
@@ -69,6 +70,10 @@ def create_client(project_dir: Path, model: str, mode: str = "greenfield") -> Cl
     if mode == "backlog":
         all_mcp_tools.extend(mcp_setup.get_azure_devops_tools())
 
+    # Load mode-specific skills
+    skills_manager = SkillsManager(project_dir, mode)
+    skills = skills_manager.load_skills_for_mode()
+
     # Create comprehensive security settings
     # Note: Using relative paths ("./**") restricts access to project directory
     # since cwd is set to project_dir
@@ -107,6 +112,7 @@ def create_client(project_dir: Path, model: str, mode: str = "greenfield") -> Cl
     print(f"   - MCP servers: {', '.join(mcp_servers.keys())}")
     print("   - Secrets scanning enabled (blocks git commits with secrets)")
     print("   - E2E validation enabled (requires tests for user-facing features)")
+    print(f"   - Skills loaded: {', '.join([s['name'] for s in skills]) if skills else 'none'}")
     print()
 
     return ClaudeSDKClient(
@@ -118,6 +124,7 @@ def create_client(project_dir: Path, model: str, mode: str = "greenfield") -> Cl
                 *all_mcp_tools,
             ],
             mcp_servers=mcp_servers,
+            skills=[str((Path(s["path"]) / "SKILL.md").resolve()) for s in skills],
             hooks={
                 "PreToolUse": [
                     HookMatcher(matcher="Bash", hooks=[
