@@ -128,16 +128,27 @@ def create_client(project_dir: Path, model: str, mode: str = "greenfield") -> Cl
         print("\n" + lsp_setup['installation_guide'])
     print()
 
+    # Build system prompt with skills information
+    system_prompt = "You are an expert full-stack developer building a production-quality web application."
+
+    # Add skills as reference documentation in system prompt
+    if skills:
+        system_prompt += "\n\nYou have access to the following reference documentation:\n"
+        for skill in skills:
+            skill_path = Path(skill["path"]) / "SKILL.md"
+            if skill_path.exists():
+                skill_content = skill_path.read_text()
+                system_prompt += f"\n---\n{skill_content}\n"
+
     return ClaudeSDKClient(
         options=ClaudeCodeOptions(
             model=model,
-            system_prompt="You are an expert full-stack developer building a production-quality web application.",
+            system_prompt=system_prompt,
             allowed_tools=[
                 *BUILTIN_TOOLS,
                 *all_mcp_tools,
             ],
             mcp_servers=mcp_servers,
-            skills=[str((Path(s["path"]) / "SKILL.md").resolve()) for s in skills],
             hooks={
                 "PreToolUse": [
                     HookMatcher(matcher="Bash", hooks=[
