@@ -58,4 +58,4 @@ py-modules = [
 ]
 
 [tool.setuptools.package-data]
-"*" = ["prompts/*.md", "prompts/*.txt"]
+"*" = ["prompts/*.md", "prompts/*.txt", "VERSION", ".claude/skills/**/*.md"]

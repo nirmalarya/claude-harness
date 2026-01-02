@@ -1,0 +1,4 @@
+include VERSION
+include README.md
+recursive-include prompts *.md *.txt
+recursive-include .claude/skills *.md
