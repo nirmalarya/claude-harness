@@ -45,6 +45,12 @@ setup(
         "setup_mcp",
         "skills_manager",
     ],
+    package_data={
+        "prompts": ["*.md", "*.txt"],
+        ".claude": ["skills/**/*.md"],
+        "": ["VERSION"],
+    },
+    include_package_data=True,
     install_requires=requirements,
     entry_points={
         "console_scripts": [
