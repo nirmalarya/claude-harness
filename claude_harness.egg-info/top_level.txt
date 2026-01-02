@@ -4,10 +4,12 @@ client
 error_handler
 infra
 loop_detector
+lsp_plugins
 output_formatter
 progress
 prompts
 retry_manager
 security
 setup_mcp
+skills_manager
 validators

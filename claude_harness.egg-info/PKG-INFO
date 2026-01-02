@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: claude-harness
-Version: 3.1.0
+Version: 3.2.0
 Summary: Production-ready autonomous coding harness using Claude Code SDK
 Home-page: https://github.com/nirmalarya/claude-harness
 Author: Nirmalarya
@@ -23,6 +23,7 @@ Classifier: Programming Language :: Python :: 3.14
 Requires-Python: >=3.10
 Description-Content-Type: text/markdown
 Requires-Dist: claude-code-sdk>=0.0.25
+Requires-Dist: pyyaml>=6.0
 Dynamic: author
 Dynamic: home-page
 Dynamic: requires-python

@@ -1,9 +1,12 @@
+MANIFEST.in
 README.md
+VERSION
 agent.py
 autonomous_agent.py
 client.py
 error_handler.py
 loop_detector.py
+lsp_plugins.py
 output_formatter.py
 progress.py
 prompts.py
@@ -12,6 +15,12 @@ retry_manager.py
 security.py
 setup.py
 setup_mcp.py
+skills_manager.py
+.claude/skills/code-quality/SKILL.md
+.claude/skills/harness-patterns/SKILL.md
+.claude/skills/lsp-navigation/SKILL.md
+.claude/skills/project-patterns/SKILL.md
+.claude/skills/puppeteer-testing/SKILL.md
 claude_harness.egg-info/PKG-INFO
 claude_harness.egg-info/SOURCES.txt
 claude_harness.egg-info/dependency_links.txt
