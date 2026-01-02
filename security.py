@@ -44,6 +44,10 @@ ALLOWED_COMMANDS = {
     "uniq",
     "tr",
     "jq",     # JSON parsing
+    # Arithmetic
+    "expr",   # Expression evaluation
+    "bc",     # Calculator
+    "let",    # Shell arithmetic
     # Node.js development
     "npm",
     "node",
@@ -193,17 +197,42 @@ def extract_commands(command_string: str) -> list[str]:
             ):
                 continue
 
-            # Skip flags/options
-            if token.startswith("-"):
+            # Skip flags/options (but not redirection operators)
+            if token.startswith("-") and token not in ("-", "<", ">"):
                 continue
 
-            # Skip variable assignments (VAR=value)
-            if "=" in token and not token.startswith("="):
+            # Skip simple variable assignments (VAR=value) but NOT command substitution (VAR=$(cmd))
+            if "=" in token and not token.startswith("=") and "=$(" not in token and not token.startswith("`"):
                 continue
 
-            if expect_command:
+            # Check for command substitution even when not expecting a command
+            # Handles: $(cmd, `cmd`, var=$(cmd
+            has_cmd_substitution = "=$(" in token or token.startswith("$(") or "`" in token
+
+            if expect_command or has_cmd_substitution:
                 # Extract the base command name (handle paths like /usr/bin/python)
                 cmd = os.path.basename(token)
+
+                # Strip command substitution syntax: var=$(cmd -> cmd
+                # Handle patterns like: count=$(jq, result=$(grep, etc.
+                if "=$(" in cmd:
+                    cmd = cmd.split("=$(", 1)[1]
+
+                # Strip leading $( from command substitution: $(jq -> jq
+                if cmd.startswith("$("):
+                    cmd = cmd[2:]
+
+                # Strip closing parenthesis from command substitution: jq) -> jq
+                if cmd.endswith(")"):
+                    cmd = cmd.rstrip(")")
+
+                # Strip backticks: `cmd` -> cmd
+                cmd = cmd.strip("`")
+
+                # Skip empty commands (edge case from stripping)
+                if not cmd:
+                    continue
+
                 commands.append(cmd)
                 expect_command = False
 
