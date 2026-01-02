@@ -336,45 +336,107 @@ Use browser automation tools:
 - Skip visual verification
 - Mark tests passing without thorough verification
 
-### STEP 12: EXECUTE THE TEST YOU CREATED (MANDATORY!)
+### STEP 12: EXECUTE E2E TEST (MANDATORY - NOT CODE VERIFICATION!)
 
-**CRITICAL: Tests must be RUN and PASS, not just exist!**
+**CRITICAL: E2E tests must ACTUALLY RUN against running services!**
+
+**TWO TYPES OF TESTS - YOU MUST RUN THE E2E ONE:**
+
+1. ❌ **Code Verification Test** (simple, standalone)
+   - Example: `test_feature_99_simple.py`, `test_feature_99_verification.py`
+   - Just reads source files, greps for patterns
+   - Doesn't require running backend/frontend
+   - **NOT SUFFICIENT** for marking feature as passing!
+
+2. ✅ **E2E Test** (real integration test)
+   - Example: `test_feature_99_e2e.py`, `test_feature_99_api.py`
+   - Makes real HTTP requests to running backend
+   - Requires backend + database + services running
+   - **REQUIRED** for marking feature as passing!
+
+**STEP-BY-STEP E2E TEST EXECUTION:**
 
 ```bash
-# Find test file you created this session
-test_file=$(git diff --name-only HEAD | grep -E "test_.*\.(py|spec\.ts|test\.js|sh)$" | head -1)
+# 1. Find E2E test file (NOT code verification!)
+e2e_test=$(git diff --name-only HEAD | grep -E "test_.*_(e2e|api|integration)\.(py|spec\.ts|test\.js)$" | head -1)
 
-if [ -n "$test_file" ]; then
-    echo "Found test: $test_file"
-    echo "EXECUTING TEST NOW..."
-    
-    # Run based on file type
-    if [[ "$test_file" == *.py ]]; then
-        python3 "$test_file"
-        test_result=$?
-    elif [[ "$test_file" == *.spec.ts ]] || [[ "$test_file" == *.test.js ]]; then
-        npm test "$test_file"
-        test_result=$?
-    elif [[ "$test_file" == *.sh ]]; then
-        bash "$test_file"
-        test_result=$?
-    fi
-    
-    if [ $test_result -ne 0 ]; then
-        echo "❌ TEST FAILED!"
-        echo "Fix implementation until test passes!"
-        echo "DO NOT mark feature as passing!"
-        exit 1
-    fi
-    
-    echo "✅ Test executed and PASSED"
-else
-    echo "⚠️  No test file created this session"
-    echo "For testable features, create and run test!"
+if [ -z "$e2e_test" ]; then
+    echo "❌ NO E2E TEST FOUND!"
+    echo "You created a code verification test, but not an E2E test!"
+    echo "E2E test must:"
+    echo "  - Make HTTP requests to running backend"
+    echo "  - Test complete user workflow"
+    echo "  - Verify data persistence"
+    echo "DO NOT mark feature as passing without E2E test!"
+    exit 1
 fi
+
+echo "Found E2E test: $e2e_test"
+
+# 2. Verify services are running
+echo "Checking if services are running..."
+if ! curl -s http://localhost:8100/health > /dev/null 2>&1; then
+    echo "❌ BACKEND NOT RUNNING!"
+    echo "E2E tests require running backend."
+    echo "Start backend first, then re-run test."
+    exit 1
+fi
+
+# 3. Make test executable
+chmod +x "$e2e_test"
+
+# 4. RUN THE E2E TEST
+echo "EXECUTING E2E TEST NOW..."
+echo "This will make real HTTP requests to http://localhost:8100"
+echo ""
+
+if [[ "$e2e_test" == *.py ]]; then
+    python3 "$e2e_test"
+    test_result=$?
+elif [[ "$e2e_test" == *.spec.ts ]] || [[ "$e2e_test" == *.test.js ]]; then
+    npm test "$e2e_test"
+    test_result=$?
+fi
+
+# 5. Verify test PASSED
+if [ $test_result -ne 0 ]; then
+    echo ""
+    echo "❌ E2E TEST FAILED!"
+    echo "The feature does NOT work end-to-end."
+    echo "Fix implementation until E2E test passes!"
+    echo "DO NOT mark feature as passing!"
+    exit 1
+fi
+
+echo ""
+echo "✅ E2E Test executed and PASSED"
+echo "Feature works end-to-end with running services!"
 ```
 
-**NEVER mark feature passing if test failed or wasn't run!**
+**PROOF REQUIRED BEFORE MARKING PASSING:**
+You MUST show output proving E2E test ran:
+```
+$ python3 test_feature_99_e2e.py
+[Step 1] Login user... ✅
+[Step 2] Create position... ✅
+[Step 3] Close position... ✅
+[Step 4] Verify trade journal... ✅
+✅ ALL E2E TESTS PASSED
+```
+
+**FORBIDDEN SHORTCUTS:**
+- ❌ Running only "code verification" test
+- ❌ Creating E2E test but never running it
+- ❌ Running E2E test that makes no HTTP requests
+- ❌ Marking passing without E2E test execution proof
+- ❌ Mocking HTTP requests instead of hitting real backend
+
+**ONLY mark feature as passing after:**
+- [x] E2E test file created (named `*_e2e.py` or `*_api.py`)
+- [x] Backend/frontend services are running
+- [x] E2E test executed (actually ran it)
+- [x] E2E test passed (exit code 0, all checks passed)
+- [x] Test output shows successful HTTP requests
 
 ### STEP 13: ZERO TODOs CHECK (MANDATORY)
 
@@ -439,14 +501,18 @@ to:
 - Reorder tests
 
 **ONLY CHANGE "passes" FIELD AFTER ALL GATES PASS:**
-✅ Stop condition checked  
-✅ Services healthy  
-✅ Database schema validated  
-✅ Browser integration tested  
-✅ E2E test passed  
-✅ Zero TODOs verified  
-✅ Security checklist complete  
-✅ Verification with screenshots done
+✅ Stop condition checked (project not 100% complete)
+✅ Services healthy (backend/frontend running)
+✅ Database schema validated (if feature uses database)
+✅ Browser integration tested (if frontend feature)
+✅ **E2E test created AND executed AND passed** (MANDATORY)
+✅ E2E test makes real HTTP requests (not mocked)
+✅ E2E test output shown as proof
+✅ Zero TODOs verified (no "TODO" in implementation code)
+✅ Security checklist complete (if auth/security feature)
+✅ Verification with screenshots done (if UI feature)
+
+**CRITICAL: Item 5-7 are MANDATORY for ALL features with user-facing functionality!**
 
 ### STEP 15: FILE ORGANIZATION CHECK (Before Commit!)
 
