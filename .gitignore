@@ -10,3 +10,12 @@ venv/
 # Logs
 logs/
 *.log
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
