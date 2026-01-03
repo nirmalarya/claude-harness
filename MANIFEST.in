@@ -1,4 +1,5 @@
 include VERSION
 include README.md
+include requirements.txt
 recursive-include prompts *.md *.txt
-recursive-include .claude/skills *.md
+recursive-include harness_data/.claude/skills *.md
