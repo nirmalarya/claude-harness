@@ -4,6 +4,33 @@ Production-ready autonomous coding harness using Claude Code SDK. Build complete
 
 **Proven Success:** Built [SHERPA v1.0](https://github.com/nirmalarya/sherpa) - 165 features, production-ready, A- grade quality.
 
+## Key Features
+
+🎯 **Autonomous Development**
+- Two-agent pattern (Initializer + Coding agents)
+- Auto-continues between sessions with fresh context windows
+- Progress persisted via feature_list.json and git commits
+
+🔒 **Production-Ready Quality**
+- **v3.2.2**: Mandatory E2E debugging - no workarounds allowed
+- **v3.2.1**: E2E test execution enforced with proof required
+- Triple timeout protection (15/10/120 min)
+- Retry + skip logic (3 attempts per feature)
+- Loop detection prevents infinite hangs
+
+🧠 **Code Intelligence (v3.2.0)**
+- Skills System with 5 built-in skills
+- LSP integration for code navigation
+- Auto-discovers patterns from existing code
+- Mode-specific domain knowledge (greenfield/enhancement/bugfix)
+
+🛡️ **Security First**
+- Bash command allowlist
+- Filesystem restrictions (project dir only)
+- Secrets scanning
+- Browser cleanup hooks
+- MCP auto-configuration (Context7, Puppeteer)
+
 ## Prerequisites
 
 **Required:** Install the latest versions of both Claude Code and the Claude Agent SDK:
@@ -34,8 +61,15 @@ export CLAUDE_CODE_OAUTH_TOKEN='your-oauth-token-here'
 ## Installation
 
 ```bash
-# Install from source
-cd /path/to/claude-harness
+# Install from PyPI (recommended)
+pip install claude-harness
+
+# Or install from GitHub
+pip install git+https://github.com/nirmalarya/claude-harness.git
+
+# Or install from source (development)
+git clone https://github.com/nirmalarya/claude-harness.git
+cd claude-harness
 pip install -e .
 
 # Verify installation
@@ -60,18 +94,32 @@ claude-harness --mode enhancement --project-dir ./existing-app --spec ./features
 
 📖 **[Read the full User Guide →](USER_GUIDE.md)**
 
-## What's New in v3.1.0
+## What's New in v3.2.2
 
-✅ **Production Reliability Features:**
-- **Triple Timeout Protection** - 15/10/120 min timeouts prevent infinite hangs
-- **Retry + Skip Logic** - Auto-retry failed features (3 attempts), skip after max failures
-- **Loop Detection** - Prevents infinite loops and repeated file reads
-- **Comprehensive Error Logging** - Structured error logs in `.claude/errors.json`
-- **E2E Validation Enforcement** - Commits blocked without E2E tests (CRITICAL BUG FIX)
-- **MCP Auto-Configuration** - Context7 and Puppeteer servers pre-configured
-- **Security Hooks** - Secrets scanning, bash allowlist, filesystem restrictions
+✅ **Critical Quality Fix - Mandatory E2E Debugging:**
+- **E2E Test Failures Now Require Debugging** - Agents can't skip to code verification when E2E tests fail
+- **Debugging Scripts Provided** - Step-by-step scripts for common issues (backend timeout, DB connection, zombie processes)
+- **Forbidden Workarounds** - Explicitly blocked shortcuts that bypass real testing
+- **Self-Healing** - Agent fixes infrastructure issues (restart backend, start DB, create test users)
+- **Quality Gate** - "If E2E failed: Debugged, fixed, re-ran until passing" is now MANDATORY
 
-📖 **[Full v3.1.0 changelog →](CHANGELOG_v3.1.0.md)**
+✅ **Skills System (v3.2.0):**
+- **5 Built-in Skills** - puppeteer-testing, code-quality, project-patterns, harness-patterns, lsp-navigation
+- **Auto-Discovery** - Skills loaded from `.claude/skills/` and `~/.claude/skills/`
+- **Mode-Specific** - Different skills for greenfield, enhancement, and bugfix modes
+- **Progressive Disclosure** - SKILL.md + supporting files for rich domain knowledge
+
+✅ **LSP Integration (v3.2.0):**
+- **Code Intelligence** - goToDefinition, findReferences, hover, documentSymbol, etc.
+- **Navigate Codebases** - Find usages, jump to definitions, explore call hierarchies
+- **Context-Aware** - Understand existing patterns before making changes
+
+✅ **E2E Enforcement (v3.2.1):**
+- **Mandatory E2E Execution** - All user-facing features must pass E2E tests
+- **Proof Required** - Agent must show test output with exit code 0
+- **No More "Trust Me" Commits** - Code verification alone is insufficient
+
+📖 **Full changelogs:** [v3.2.2](CHANGELOG_v3.2.2.md) | [v3.2.1](CHANGELOG_v3.2.1.md) | [v3.2.0](CHANGELOG_v3.2.0.md) | [v3.1.0](CHANGELOG_v3.1.0.md)
 
 ## Important Timing Expectations
 
@@ -120,14 +168,34 @@ Commands not in the allowlist are blocked by the security hook.
 claude-harness/
 ├── autonomous_agent.py       # Main entry point
 ├── agent.py                  # Agent session logic
-├── client.py                 # Claude SDK client configuration
+├── client.py                 # Claude SDK client with skills integration
 ├── security.py               # Bash command allowlist and validation
+├── skills_manager.py         # Skills discovery and loading (v3.2.0)
+├── lsp_plugins.py            # LSP code intelligence plugins (v3.2.0)
 ├── progress.py               # Progress tracking utilities
-├── prompts.py                # Prompt loading utilities
+├── retry_manager.py          # Feature retry and skip logic
+├── loop_detector.py          # Infinite loop prevention
+├── error_handler.py          # Structured error logging
+├── setup_mcp.py              # MCP server auto-configuration
 ├── prompts/
 │   ├── app_spec.txt          # Application specification
 │   ├── initializer_prompt.md # First session prompt
-│   └── coding_prompt.md      # Continuation session prompt
+│   ├── coding_prompt.md      # Continuation session prompt (with v3.2.2 E2E debugging)
+│   └── [other prompts]       # Enhancement, bugfix, validation modes
+├── harness_data/             # Bundled package data (v3.2.0)
+│   └── .claude/skills/       # Built-in skills
+│       ├── puppeteer-testing/
+│       ├── code-quality/
+│       ├── project-patterns/
+│       ├── harness-patterns/
+│       └── lsp-navigation/
+├── validators/               # Quality enforcement hooks
+│   ├── e2e_hook.py           # E2E test enforcement (v3.2.1)
+│   ├── e2e_verifier.py       # E2E debugging enforcement (v3.2.2)
+│   ├── secrets_hook.py       # Secrets scanning
+│   └── browser_cleanup_hook.py
+├── infra/
+│   └── healer.py             # Infrastructure self-healing
 └── requirements.txt          # Python dependencies
 ```
 
