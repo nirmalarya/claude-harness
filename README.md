@@ -2,8 +2,6 @@
 
 Production-ready autonomous coding harness using Claude Code SDK. Build complete applications autonomously with a two-agent pattern (initializer + coding agents).
 
-**Proven Success:** Built [SHERPA v1.0](https://github.com/nirmalarya/sherpa) - 165 features, production-ready, A- grade quality.
-
 ## Key Features
 
 🎯 **Autonomous Development**
