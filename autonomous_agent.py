@@ -125,7 +125,7 @@ def main() -> None:
             from importlib.metadata import version
             pkg_version = version("claude-harness")
         except Exception:
-            pkg_version = "3.2.0"  # Fallback version
+            pkg_version = "3.3.0"  # Fallback version
         print(f"claude-harness v{pkg_version}")
         return
 

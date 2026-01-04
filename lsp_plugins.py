@@ -1,5 +1,5 @@
 """
-LSP Plugin Manager for claude-harness v3.2
+LSP Plugin Manager for claude-harness v3.3
 ==========================================
 
 Manages LSP plugins from Anthropic's official marketplace.

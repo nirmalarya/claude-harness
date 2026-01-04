@@ -1,5 +1,5 @@
 """
-Skills Manager for claude-harness v3.2.0
+Skills Manager for claude-harness v3.3.0
 ========================================
 
 Manages Claude Code Skills - reusable domain knowledge that improves code quality.

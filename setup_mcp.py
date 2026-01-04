@@ -1,5 +1,5 @@
 """
-MCP Server Auto-Configuration for claude-harness v3.2
+MCP Server Auto-Configuration for claude-harness v3.3
 ==========================================================
 
 Dynamically configures MCP servers based on mode.
